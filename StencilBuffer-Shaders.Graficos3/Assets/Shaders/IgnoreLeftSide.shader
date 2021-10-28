@@ -2,6 +2,7 @@
 {
 	Properties
 	{
+		[IntRange] _StencilMask("Stencil Mask", Range(0, 255)) = 0
 		_Color("Main Color", Color) = (1,1,1,1)
 		_Texture("Basic Texture", 2D) = "white" {}
 	}
@@ -15,7 +16,7 @@
 
 			Stencil
 			{
-				Ref 1
+				Ref[_StencilMask]
 				Comp notequal
 			}
 
