@@ -1,4 +1,4 @@
-﻿Shader "Custom/ShaderStencil"
+﻿Shader "MyShaders/ShaderStencil"
 {
     Properties
     {
@@ -6,6 +6,7 @@
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
+        _Saturation ("Saturation", Range(0,5)) = 0.0
     }
     SubShader
     {
@@ -27,7 +28,7 @@
         };
 
         half _Glossiness;
-        half _Metallic;
+        half _Metallic, _Saturation;
         fixed4 _Color;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
@@ -40,8 +41,12 @@
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             // Albedo comes from a texture tinted by color
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            o.Albedo = c.rgb;
+            float2 uv = IN.uv_MainTex;
+
+            uv.x += sin(uv.y * 6.2831+_Time.y)* .01;
+
+            fixed4 c = tex2D (_MainTex, uv) * _Color;
+            o.Albedo = lerp((c.r+c.g+c.b)/3, c, _Saturation);
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
